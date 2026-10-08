@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 自在音乐 EaseMusic
+// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
 /**
  * 用桩 Octokit 跑 cla.cjs 的真实控制流。
@@ -110,7 +110,7 @@ const freshCore = () => ({
 
 const CTX = (payload, eventName) => ({
   eventName,
-  repo: { owner: 'li1164267803', repo: 'ease-music' },
+  repo: { owner: 'li1164267803', repo: 'easy-music' },
   payload,
 });
 const PULL = {
@@ -162,7 +162,7 @@ async function run(name, { context, ...opts }) {
     ),
     pull: PULL,
     commits: [{ author: { id: 42, login: 'alice', type: 'User' } }],
-    comments: [{ id: 900, body: '<!-- easemusic-cla -->\n@alice ...', user: {} }],
+    comments: [{ id: 900, body: '<!-- easymusic-cla -->\n@alice ...', user: {} }],
   });
   assert.equal(r.world.branchCreated, true, '应创建孤儿分支');
   assert.equal(r.world.statuses[0].state, 'success');

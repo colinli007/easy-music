@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 自在音乐 EaseMusic
+// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
 /**
  * 插件调用的唯一通道（design.md 决策 7）。

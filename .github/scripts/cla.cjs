@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 自在音乐 EaseMusic
+// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
 /**
  * CLA 签署检查。由 `.github/workflows/cla.yml` 经 actions/github-script 调用，
@@ -27,7 +27,7 @@ const RECHECK_PHRASE = 'recheck';
 const BRANCH = 'cla-signatures';
 const FILE_PATH = 'signatures.json';
 const STATUS_CONTEXT = 'CLA';
-const MARKER = '<!-- easemusic-cla -->';
+const MARKER = '<!-- easymusic-cla -->';
 
 /** 无需签署的账号：维护者本人（版权持有人）与机器人。 */
 const ALLOWLIST = new Set(['li1164267803']);

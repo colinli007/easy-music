@@ -1,9 +1,9 @@
 schema: spec-driven
 
 context: |
-  产品：自在音乐 / EaseMusic，跨平台个人音乐播放器（iOS + Android）。
-  仓库名 ease-music，包名与 Bundle ID 均为 com.easemusic.app。英文名固定连写 EaseMusic，
-  不单独使用 Ease。完整功能地图与 change 路线图见 openspec/PRODUCT.md。
+  产品：轻松音乐 / EasyMusic，跨平台个人音乐播放器（iOS + Android）。
+  仓库名 easy-music，包名与 Bundle ID 均为 com.easymusic.app。英文名固定连写 EasyMusic，
+  不单独使用 Easy。完整功能地图与 change 路线图见 openspec/PRODUCT.md。
 
   核心理念：音源与播放器彻底解耦——应用本身不提供、不内置、不分发任何音源，只播放用户自己
   拥有或自己指定的资源（本地文件、远程直链、用户自行安装的插件）。这既解决会员墙

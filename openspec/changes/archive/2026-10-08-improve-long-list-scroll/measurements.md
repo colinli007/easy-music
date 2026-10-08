@@ -9,7 +9,7 @@
 | 代码版本 | `a8e1482`（含 `1cc0925` 的界面修复），release 变体，`-PreactNativeArchitectures=arm64-v8a`  |
 | 设备     | 模拟器 `Medium_Phone_API_36.0`，`-memory 3072`，1080×2400                                   |
 | 数据     | 曲库 1807 首 + 注入 3000 首 `acc-bulk-`（无封面）= 4807 首；歌单「网易云中文说唱榜」1756 首 |
-| 脚本     | `ease-music-acceptance/tools/frames.sh`（帧统计）、`tools/blank.sh`（空白采样）             |
+| 脚本     | `easy-music-acceptance/tools/frames.sh`（帧统计）、`tools/blank.sh`（空白采样）             |
 
 ### 手势与采样参数
 

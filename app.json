@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "自在音乐",
-    "slug": "ease-music",
-    "scheme": "easemusic",
+    "name": "轻松音乐",
+    "slug": "easy-music",
+    "scheme": "easymusic",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
@@ -12,7 +12,7 @@
       "android"
     ],
     "ios": {
-      "bundleIdentifier": "com.easemusic.app",
+      "bundleIdentifier": "com.easymusic.app",
       "supportsTablet": true,
       "infoPlist": {
         "UIBackgroundModes": [
@@ -21,7 +21,7 @@
       }
     },
     "android": {
-      "package": "com.easemusic.app",
+      "package": "com.easymusic.app",
       "adaptiveIcon": {
         "backgroundColor": "#03050D",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

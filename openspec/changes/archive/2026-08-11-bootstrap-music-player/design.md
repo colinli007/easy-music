@@ -134,7 +134,7 @@
 
 ### 决策 9：开源与上架并行带来的约束
 
-**应用标识**：项目定名为「自在音乐 / EaseMusic」，标识见 `openspec/PRODUCT.md - 项目标识`。对本 change 的直接约束是三处标识必须一次定死、不得在实施中临时拍板：Expo `app.json` 的 `name`（自在音乐）与 `slug`（`ease-music`）、`android.package` 与 `ios.bundleIdentifier`（均为 `com.easemusic.app`）。包名一旦提交到应用商店即无法变更，重命名意味着重新上架并丢失全部下载量与评价，因此必须在 EAS Build 首次出包前确定。英文名在代码、文档与商店材料中固定连写 `EaseMusic`，不单独使用 `Ease`。
+**应用标识**：项目定名为「轻松音乐 / EasyMusic」，标识见 `openspec/PRODUCT.md - 项目标识`。对本 change 的直接约束是三处标识必须一次定死、不得在实施中临时拍板：Expo `app.json` 的 `name`（轻松音乐）与 `slug`（`easy-music`）、`android.package` 与 `ios.bundleIdentifier`（均为 `com.easymusic.app`）。包名一旦提交到应用商店即无法变更，重命名意味着重新上架并丢失全部下载量与评价，因此必须在 EAS Build 首次出包前确定。英文名在代码、文档与商店材料中固定连写 `EasyMusic`，不单独使用 `Easy`。
 
 **许可证：GPL-3.0（已确定）**。本项目不复制 MusicFree 源代码，因此不受其 AGPL 传染，可自由选型。
 

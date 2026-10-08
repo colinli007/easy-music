@@ -1,6 +1,6 @@
 <div align="center">
 
-# 自在音乐 · EaseMusic
+# 轻松音乐 · EasyMusic
 
 **你的歌，你说了算。**
 

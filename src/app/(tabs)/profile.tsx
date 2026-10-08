@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 自在音乐 EaseMusic
+// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
@@ -144,7 +144,7 @@ export default function ProfileScreen() {
 
         <View style={{ backgroundColor: Colors.surface, borderRadius: 18, padding: 18, gap: 10 }}>
           <AppText size={14} weight="semibold">
-            自在音乐 EaseMusic
+            轻松音乐 EasyMusic
           </AppText>
           <AppText size={12} color={Colors.textMuted}>
             版本 {Constants.expoConfig?.version ?? '—'} · GPL-3.0-or-later

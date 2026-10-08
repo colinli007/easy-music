@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 自在音乐 EaseMusic
+// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
 /**
  * 验证 iOS 产物中不存在插件宿主与插件专属依赖（add-plugin-source-system/design.md 决策 6）。
