@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
 
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import { ArrowUpDown } from 'lucide-react-native';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import type { Track, TrackSortKey } from '@/domain/model/track';
@@ -55,6 +55,15 @@ export default function SearchScreen() {
   const [actionsFor, setActionsFor] = useState<Track | null>(null);
 
   const tracks = useTracks(sortBy, keyword);
+  const listRef = useRef<FlashListRef<Track>>(null);
+
+  // 滚动位置属于一个结果集，而结果集由检索词与排序方式确定：两者一变就回到开头。
+  // 不跟随 tracks 变化——导入、移除时用户仍在浏览同一个结果集，不该被弹回顶部；
+  // 也不用 key 重建列表，大曲库每敲一个字整表重建代价太大
+  // （polish-playback-and-library-details/design.md 决策 4）。
+  useEffect(() => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: false });
+  }, [keyword, sortBy]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: Track; index: number }) => (
@@ -100,6 +109,7 @@ export default function SearchScreen() {
         <EmptyLibrary searching={searching} onImport={() => setImporting(true)} />
       ) : (
         <FlashList
+          ref={listRef}
           data={tracks}
           keyExtractor={(track) => track.id}
           contentContainerStyle={{ paddingBottom: dockInset }}

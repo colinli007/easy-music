@@ -35,7 +35,7 @@ export function TrackActionsSheet({
   inHistory = false,
   onClose,
 }: TrackActionsSheetProps) {
-  const [mode, setMode] = useState<'actions' | 'playlists'>('actions');
+  const [mode, setMode] = useState<'actions' | 'playlists' | 'confirmRemove'>('actions');
 
   const close = () => {
     setMode('actions');
@@ -56,6 +56,19 @@ export function TrackActionsSheet({
     <Sheet visible title={track.title} onClose={close}>
       {mode === 'playlists' ? (
         <PlaylistPicker track={track} onDone={close} />
+      ) : mode === 'confirmRemove' ? (
+        // 移除无法撤销，且会连带删掉离线缓存——来源失效后那份下载再也找不回来。
+        // 写明后果而不是问「确定吗」，取消即关闭弹层（polish-playback-and-library-details/
+        // design.md 决策 5，与「清空已下载内容」同一写法）。
+        <SheetAction
+          label="确认移除"
+          hint="同时从所有歌单中移除，并删除已下载的音频与播放记录；设备上的原始文件不受影响"
+          danger
+          onPress={() => {
+            void removeTrackFromLibrary(track.id).then(notifyLibraryChanged);
+            close();
+          }}
+        />
       ) : (
         <>
           <SheetAction
@@ -94,10 +107,7 @@ export function TrackActionsSheet({
             label="从曲库移除"
             hint="不会删除设备上的原始文件"
             danger
-            onPress={() => {
-              void removeTrackFromLibrary(track.id).then(notifyLibraryChanged);
-              close();
-            }}
+            onPress={() => setMode('confirmRemove')}
           />
         </>
       )}

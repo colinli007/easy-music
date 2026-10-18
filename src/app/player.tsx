@@ -4,15 +4,11 @@
 import { useRouter } from 'expo-router';
 import {
   ChevronDown,
-  Ellipsis,
-  Heart,
   ListMusic,
-  MicVocal,
   Pause,
   Play,
   Repeat,
   Repeat1,
-  Share2,
   Shuffle,
   SkipBack,
   SkipForward,
@@ -96,8 +92,12 @@ export default function PlayerScreen() {
                 : '播放队列为空'}
             </AppText>
           </View>
-          {/* 曲目菜单尚无入口内容，先渲染出设计稿的位置 */}
-          <Ellipsis size={24} color={Colors.text} />
+          {/*
+            设计稿这里是曲目菜单，但它还没有任何内容，点了没反应的图标是错误的反馈，已去掉
+            （polish-playback-and-library-details/design.md 决策 3）。留一个与返回键等宽的
+            空位，标题才能保持居中。
+          */}
+          <View style={{ width: 24 }} />
         </View>
 
         <Artwork uri={track?.artworkUri ?? null} width="100%" height={330} radius={26} />
@@ -111,8 +111,10 @@ export default function PlayerScreen() {
               {track ? subtitle(track.artist, track.album) : '从曲库或歌单选一首开始'}
             </AppText>
           </View>
-          {/* 收藏依赖 C2 之后的曲库字段，这里只呈现设计稿的位置 */}
-          <Heart size={24} color={Colors.accent} />
+          {/*
+            设计稿在标题右侧有收藏按钮。收藏功能不存在，而强调色的实心爱心读起来是「已收藏」，
+            比不显示更误导，已去掉（决策 3）。
+          */}
         </View>
 
         <View style={{ gap: 9 }}>
@@ -220,40 +222,24 @@ export default function PlayerScreen() {
           <LyricsCard />
         )}
 
+        {/*
+          设计稿在这一行左侧还有音质标签，右侧还有「麦克风」「分享」入口。系统里没有任何音质
+          数据，那两个入口也没有对应功能，都已去掉——一枚对所有曲目都显示「无损」的标签、
+          点了没反应的图标，都是错误的反馈（polish-playback-and-library-details/design.md 决策 3）。
+        */}
         <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 20,
+          }}
         >
-          {/*
-            音质标记按设计稿呈现。来源层目前不返回采样率与位深，这枚标签还没有数据
-            支撑——离线缓存原样落盘、不解析音频参数，同样填不了它。
-          */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 7,
-              borderRadius: 13,
-              backgroundColor: Colors.surface,
-              paddingVertical: 6,
-              paddingHorizontal: 12,
-            }}
-          >
-            <View
-              style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.accent }}
-            />
-            <AppText size={11} weight="medium">
-              Hi-Res 无损
-            </AppText>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
-            {/* 本地文件曲目不渲染下载入口，这一排会自然少一枚图标 */}
-            {track ? <DownloadButton track={track} size={20} /> : null}
-            <MicVocal size={20} color={Colors.textMuted} />
-            <Pressable onPress={() => router.push('/queue')} hitSlop={10}>
-              <ListMusic size={20} color={Colors.textMuted} />
-            </Pressable>
-            <Share2 size={20} color={Colors.textMuted} />
-          </View>
+          {/* 本地文件曲目不渲染下载入口，这一排会自然少一枚图标 */}
+          {track ? <DownloadButton track={track} size={20} /> : null}
+          <Pressable onPress={() => router.push('/queue')} hitSlop={10}>
+            <ListMusic size={20} color={Colors.textMuted} />
+          </Pressable>
         </View>
 
         {cacheState.status === 'failed' ? (

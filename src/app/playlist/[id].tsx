@@ -120,7 +120,7 @@ export default function PlaylistDetailScreen() {
     return reordered.length === stored.length ? reordered : stored;
   }, [stored, pendingOrder]);
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menu, setMenu] = useState<'closed' | 'actions' | 'confirmDelete'>('closed');
   const [sorting, setSorting] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [actionsFor, setActionsFor] = useState<Track | null>(null);
@@ -178,7 +178,7 @@ export default function PlaylistDetailScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
             {/* 歌单内搜索尚未实现，先渲染出设计稿的位置 */}
             <Search size={22} color={Colors.text} />
-            <Pressable onPress={() => setMenuOpen(true)} hitSlop={10}>
+            <Pressable onPress={() => setMenu('actions')} hitSlop={10}>
               <Ellipsis size={22} color={Colors.text} />
             </Pressable>
           </View>
@@ -287,32 +287,49 @@ export default function PlaylistDetailScreen() {
         />
       )}
 
-      <Sheet visible={menuOpen} title={playlist?.name ?? ''} onClose={() => setMenuOpen(false)}>
-        <SheetAction
-          label="调整顺序"
-          onPress={() => {
-            setMenuOpen(false);
-            setSorting(true);
-          }}
-        />
-        <SheetAction
-          label="重命名"
-          onPress={() => {
-            setMenuOpen(false);
-            setRenaming(true);
-          }}
-        />
-        <SheetAction
-          label="删除歌单"
-          hint="其中的曲目仍保留在曲库中"
-          danger
-          onPress={() => {
-            void deletePlaylist(id).then(() => {
-              notifyLibraryChanged();
-              router.back();
-            });
-          }}
-        />
+      <Sheet
+        visible={menu !== 'closed'}
+        title={playlist?.name ?? ''}
+        onClose={() => setMenu('closed')}
+      >
+        {menu === 'confirmDelete' ? (
+          // 删除无法撤销，用户排好的顺序会一并丢掉。写明后果，取消即关闭弹层
+          // （polish-playback-and-library-details/design.md 决策 5）。
+          <SheetAction
+            label="确认删除"
+            hint="歌单及其中的曲目顺序将被删除，曲目仍保留在曲库中"
+            danger
+            onPress={() => {
+              void deletePlaylist(id).then(() => {
+                notifyLibraryChanged();
+                router.back();
+              });
+            }}
+          />
+        ) : (
+          <>
+            <SheetAction
+              label="调整顺序"
+              onPress={() => {
+                setMenu('closed');
+                setSorting(true);
+              }}
+            />
+            <SheetAction
+              label="重命名"
+              onPress={() => {
+                setMenu('closed');
+                setRenaming(true);
+              }}
+            />
+            <SheetAction
+              label="删除歌单"
+              hint="其中的曲目仍保留在曲库中"
+              danger
+              onPress={() => setMenu('confirmDelete')}
+            />
+          </>
+        )}
       </Sheet>
 
       <NameSheet

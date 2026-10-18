@@ -96,22 +96,45 @@ export function step(
 }
 
 /**
- * 队列中移除一项后修正顺序表。
+ * 队列中移除一项后修正顺序表，并给出移除当前项时应切到的曲目。
  *
- * media-playback spec：移除当前正在播放的曲目时自动切到下一首；队列空了则停止。
- * 这里只负责下标的重新映射，切歌动作由播放控制器执行。
+ * media-playback spec：移除当前正在播放的曲目时切到「下一首」，而「下一首」只有 `step`
+ * 一个定义——列表循环与随机在末尾绕回首位，顺序播放在末尾没有下一首
+ * （polish-playback-and-library-details/design.md 决策 2）。所以先在移除前的顺序表上
+ * 求出下一首，再把它映射到移除后的下标。按用户切歌（`user`）求：移除当前项就是「不要
+ * 这首了，往下走」，单曲循环下也照常往下走。
+ *
+ * 移除当前项后，返回的顺序表位置就指向接下来的当前曲目；`hasNext` 说明它是不是真正的
+ * 「下一首」。没有下一首（顺序播放下移除了末尾的当前项）时停在新的末尾一首，与队列
+ * 自然播到头停下的语义一致（决策 1），由控制器决定不自动播放。
  */
-export function withRemoved({ order, position }: PlayOrder, removedIndex: number): PlayOrder {
+export function withRemoved(
+  { order, position }: PlayOrder,
+  removedIndex: number,
+  mode: PlayMode,
+): { order: PlayOrder; hasNext: boolean } {
+  const remap = (index: number) => (index > removedIndex ? index - 1 : index);
+  const remapped = order.filter((index) => index !== removedIndex).map(remap);
+
+  if (remapped.length === 0) return { order: { order: [], position: -1 }, hasNext: false };
+
   const removedPosition = order.indexOf(removedIndex);
-  const remapped = order
-    .filter((index) => index !== removedIndex)
-    .map((index) => (index > removedIndex ? index - 1 : index));
+  const removedCurrent = removedPosition !== -1 && removedPosition === position;
 
-  if (remapped.length === 0) return { order: [], position: -1 };
-  if (removedPosition === -1) return { order: remapped, position };
+  if (!removedCurrent) {
+    // 移除的是当前项之前的曲目，当前项在顺序表中前移一位
+    const removedBeforeCurrent = removedPosition !== -1 && removedPosition < position;
+    return {
+      order: { order: remapped, position: removedBeforeCurrent ? position - 1 : position },
+      hasNext: false,
+    };
+  }
 
-  // 移除的是当前项之前的曲目，当前项在顺序表中前移一位；
-  // 移除的就是当前项时，位置原地不动即指向原来的下一首。
-  const nextPosition = removedPosition < position ? position - 1 : position;
-  return { order: remapped, position: Math.min(nextPosition, remapped.length - 1) };
+  const target = step({ order, position }, 1, mode, 'user');
+  if (!target) return { order: { order: remapped, position: remapped.length - 1 }, hasNext: false };
+
+  return {
+    order: { order: remapped, position: remapped.indexOf(remap(target.index)) },
+    hasNext: true,
+  };
 }

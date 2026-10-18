@@ -278,7 +278,8 @@ export async function removeFromQueue(index: number): Promise<void> {
 
   const wasCurrent = index === snapshot.currentIndex;
   const queue = snapshot.queue.filter((_, i) => i !== index);
-  order = withRemoved(order, index);
+  const removed = withRemoved(order, index, snapshot.playMode);
+  order = removed.order;
 
   if (queue.length === 0) {
     clearQueue();
@@ -291,8 +292,10 @@ export async function removeFromQueue(index: number): Promise<void> {
 
   if (wasCurrent) {
     const target = order.order[order.position];
+    // 没有下一首时停在新的末尾一首，与队列自然播到头一样不自动播放（决策 2）
+    const autoPlay = removed.hasNext && snapshot.playWhenReady;
     if (target === undefined) stop();
-    else await load(target, { autoPlay: snapshot.playWhenReady, direction: 1 });
+    else await load(target, { autoPlay, direction: 1 });
   }
 }
 
@@ -355,6 +358,10 @@ async function advance(direction: 1 | -1, reason: AdvanceReason): Promise<void> 
     failedInStreak.clear();
     player?.pause();
     publish({ state: 'paused', playWhenReady: false });
+    // 自然播到队列尽头：引擎停在曲目末尾，对它 play() 不会再出声。就在这一刻拉回开头，
+    // 「暂停在这一首」才名副其实，播放键无需判断是否已播完（polish-playback-and-library-
+    // details/design.md 决策 1）。失败跳不出去时音源已作废，拉回开头没有意义。
+    if (reason === 'finished') await seekTo(0);
     return;
   }
 

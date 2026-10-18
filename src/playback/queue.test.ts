@@ -17,7 +17,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import type { PlayMode } from '@/domain/model/playback';
-import { buildOrder, step, type AdvanceReason, type PlayOrder } from '@/playback/queue';
+import {
+  buildOrder,
+  step,
+  withRemoved,
+  type AdvanceReason,
+  type PlayOrder,
+} from '@/playback/queue';
 
 const MODES: readonly PlayMode[] = ['sequential', 'loopAll', 'loopOne', 'shuffle'];
 const REASONS: readonly AdvanceReason[] = ['finished', 'skipped', 'user'];
@@ -107,6 +113,67 @@ test('空队列一律停止', () => {
       assert.equal(step(empty, 1, mode, reason), null, `${mode} / ${reason} / +1`);
       assert.equal(step(empty, -1, mode, reason), null, `${mode} / ${reason} / -1`);
     }
+  }
+});
+
+/**
+ * 移除后的断言按「曲目」而不是按下标写：移除会让后面的下标整体前移一位，
+ * 直接比下标看不出切到的是不是原来的那首。
+ */
+function removing(mode: PlayMode, position: number, removedPosition: number) {
+  const before = orderAt(mode, position);
+  const removedIndex = before.order[removedPosition] as number;
+  const result = withRemoved(before, removedIndex, mode);
+  const current = result.order.order[result.order.position];
+  return {
+    result,
+    /** 移除后顺序表当前位置上的曲目，换算回移除前的下标 */
+    currentBefore:
+      current === undefined ? undefined : current >= removedIndex ? current + 1 : current,
+    before,
+  };
+}
+
+test('移除排在中间的当前曲目：各模式都切到原来的下一首（单曲循环也往下走）', () => {
+  for (const mode of MODES) {
+    const { result, currentBefore, before } = removing(mode, 1, 1);
+    assert.equal(result.hasNext, true, mode);
+    assert.equal(currentBefore, before.order[2], mode);
+    assert.equal(result.order.order.length, 3, mode);
+  }
+});
+
+test('移除排在最后的当前曲目：顺序模式停在新的末尾一首，其余模式回到首位', () => {
+  for (const mode of MODES) {
+    const { result, currentBefore, before } = removing(mode, 3, 3);
+    if (mode === 'sequential') {
+      assert.equal(result.hasNext, false, mode);
+      assert.equal(result.order.position, 2, mode);
+      assert.equal(currentBefore, before.order[2], mode);
+    } else {
+      assert.equal(result.hasNext, true, mode);
+      assert.equal(result.order.position, 0, mode);
+      assert.equal(currentBefore, before.order[0], mode);
+    }
+  }
+});
+
+test('移除非当前曲目：当前曲目不变，排在它之前时位置前移一位', () => {
+  for (const mode of MODES) {
+    const earlier = removing(mode, 2, 0);
+    assert.equal(earlier.result.order.position, 1, `${mode} / 之前`);
+    assert.equal(earlier.currentBefore, earlier.before.order[2], `${mode} / 之前`);
+
+    const later = removing(mode, 1, 3);
+    assert.equal(later.result.order.position, 1, `${mode} / 之后`);
+    assert.equal(later.currentBefore, later.before.order[1], `${mode} / 之后`);
+  }
+});
+
+test('移除唯一的曲目：顺序表清空', () => {
+  for (const mode of MODES) {
+    const result = withRemoved({ order: [0], position: 0 }, 0, mode);
+    assert.deepEqual(result, { order: { order: [], position: -1 }, hasNext: false }, mode);
   }
 });
 
