@@ -1,9 +1,12 @@
-Built-in imagegen prompt. Output reviewed on 2026-10-08. Promotional illustration, not a product screenshot.
+生成方式：内置 image_gen；全新生成；2026-10-18。
 
-Brand-rename edit prompt applied to the previous cover on 2026-10-08:
-
-Edit the attached promotional poster for the user-requested product rename. Preserve the existing portrait layout, ivory paper background, dark forest green typography, subtle lime sound waves, vinyl record illustration, type hierarchy, all spacing and visual style. Change only these text elements: top English brand "EaseMusic" to exactly "EasyMusic"; large Chinese product headline "自在音乐" to exactly "轻松音乐"; footer "GitHub · li1164267803/ease-music" to exactly "GitHub · li1164267803/easy-music"; lower-left final line "自在聆听" to exactly "轻松聆听". Keep all other text identical, especially "免费 · 开源 · 无广告", "你的歌，你说了算", and "播放器不内置音乐资源". Chinese text must be correct, crisp and readable. Ensure no old brand name or old repository slug remains. Do not add elements or new claims. This is a promotional illustration, not an app screenshot.
-
-Standalone prompt for the current brand:
-
-Use case: ads-marketing. Create a finished premium editorial cover for a Chinese open-source personal music player named EasyMusic 轻松音乐. Portrait 3:4 composition, clean ivory paper background, dark forest green typography, restrained soft lime accent, generous whitespace, subtle abstract vinyl groove and flowing sound wave in lower half. This is a typography-led promotional poster, not a screenshot or phone UI. Exact Chinese text, crisp and correctly typeset: small top "EasyMusic"; large headline "轻松音乐"; strong second headline "免费 · 开源 · 无广告"; small lower copy "你的歌，你说了算"; small footer "GitHub · li1164267803/easy-music"; bottom fine-print "播放器不内置音乐资源". Balance visually with large headline and tactile understated abstract music artwork. No people, phone mockups, fabricated UI, store badges, QR codes, invented ratings, usage statistics, or other claims. Ensure every line legible and fully inside safe margins.
+Use case: ads-marketing
+Create a polished original Chinese promotional poster for the open-source personal music player 轻松音乐 / EasyMusic. Portrait 2:3 composition. Match the actual code palette: nearly black #0A0A0C, charcoal #17171C, vivid lime #C8FF4D, warm-white #F6F6F8. Editorial typography, very clear simplified Chinese, generous negative space, sophisticated high contrast. Top brand small, huge headline upper third, tactile black vinyl disc with a luminous lime paper sleeve and subtly flowing sound ribbon in center. This is a conceptual music illustration, never an app screenshot. No phone, no fake UI, no artist albums, no third party logos. All text must be verbatim, clean and legible:
+top: "轻松音乐 EasyMusic"
+main headline two lines: "你的歌" / "你说了算"
+supporting bold line: "免费 · 开源 · 无广告"
+below illustration: "本地音乐 / 歌单 / 歌词 / 离线缓存"
+small but readable boundary: "不内置音源 · 音乐由你准备"
+footer: "GitHub  colinli007/easy-music"
+tiny caption: "宣传插画 · 非应用截图"
+Do not add any other words or claims. No QR code, no app store badges, no star counts.

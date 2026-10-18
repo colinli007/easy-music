@@ -1,51 +1,58 @@
-# 轻松音乐推广稿与发布说明
+# 轻松音乐推广素材
 
-这套内容用于向 CSDN、掘金和小红书读者介绍 EasyMusic 轻松音乐，以访问 GitHub、了解项目并自愿点 Star 为主要目标。三篇正文均可独立阅读，未向任何平台上传或发布。
+更新日期：2026 年 10 月 18 日。依据本地 `e7b2d24` 对应代码、当前项目说明，以及当日公开仓库和 Releases 页面重新整理。目标沿用原套件：向小红书、掘金与 CSDN 介绍轻松音乐，引导了解项目并自愿 Star。未上传、未发布。
 
-## 稿件与素材
+## 直接使用
 
-| 平台 | 文件 | 内容角度 |
+| 平台 | 完整文案 | 角度 |
 | --- | --- | --- |
-| CSDN | [完整正文](csdn.md) | 个人曲库的管理与播放，说明功能和适用对象 |
-| 掘金 | [完整正文](juejin.md) | 音源与播放解耦，以及缓存入口的设计 |
-| 小红书 | [笔记正文](xiaohongshu.md) | 已有音乐文件的人，怎样更轻松地听歌 |
+| 小红书 | [xiaohongshu.md](xiaohongshu.md) | 你的歌，你说了算：整理自己的音乐 |
+| CSDN | [csdn.md](csdn.md) | 导入、管理与播放个人曲库 |
+| 掘金 | [juejin.md](juejin.md) | 来源解析、缓存优先与播放队列边界 |
 
-[共用封面](assets/cover.png)采用竖版文字与音乐概念插画，适合小红书首图，也可作为长文头图。它由内置 imagegen 生成并完成品牌更名编辑，属于宣传插画，不是应用截图。生成及编辑提示词见 [cover-prompt.txt](assets/cover-prompt.txt)。三平台文案与封面已统一为“轻松音乐 / EasyMusic”。三平台文案的仓库地址已改为 `colinli007/easy-music`，**但封面图底部仍印着旧地址 `li1164267803/easy-music`**，使用前需按新地址重新生成或编辑封面。
+| 图片 | 建议位置 | 性质 |
+| --- | --- | --- |
+| [cover.png](assets/cover.png) | 小红书第 1 张、长文头图 | 品牌宣传插画 |
+| [features.png](assets/features.png) | 小红书第 2 张、长文功能说明处 | 功能示意图 |
 
-## 推广主张
+两张图片均为 1024 × 1536 PNG，由内置 imagegen 重新生成。已查看最终成图，核对主要中文、项目名及仓库地址。深色与荧光绿取自 `src/ui/theme.ts`，两图均标注“非应用截图”。没有生成模拟 App 界面、试听结果、用户评价或统计数据。
 
-核心表述：**轻松音乐，一个免费、开源、无广告的个人音乐播放器。**
+[封面提示词](assets/cover-prompt.txt)与[功能图提示词](assets/features-prompt.txt)随素材交付。旧封面已被新版替换，图中文字统一使用 `colinli007/easy-music`。
 
-先用本地音乐、歌单、歌词和离线播放解释实际价值，再邀请感兴趣的读者访问 GitHub。每篇正文结尾只保留一次 Star 邀请，不把 Star 设成下载或使用的条件。
+小红书顺序：品牌封面 → 功能图。正文见独立稿件；图片上的逐页文案以实际 PNG 为准。长文已插入图片及图注，相对路径基于当前目录。
 
-“免费”指播放器免费；不等于附带免费曲库。不使用“全网音乐免费听”“永久免费下载任意歌曲”“所有插件安全无广告”等没有依据的主张。
+## 核心表达
 
-## 当前发布入口
+**你的歌，你说了算。音乐由你准备，播放交给轻松音乐。**
 
-截至 2026 年 10 月 18 日，项目首页已更新为功能完成、Android 与 iOS 均已验收，并写明**只以开源形式分发、不上架任何应用商店**：Android 安装包在 [Releases](https://github.com/colinli007/easy-music/releases) 提供，iOS 需自行编译安装。
+“免费、开源、无广告”描述播放器本身，不承诺附带曲库、第三方插件无广告或任意歌曲可下载。无广告的核查范围是当前应用源码及依赖，没有扩展成对外部插件的审计结论。
 
-本套稿件按“开源项目介绍”组织，不声称已上架应用商店。首个 Release 发布前，稿件中不要写“下载安装”，只引导访问仓库；发布后可补充 Android 安装包的入口。
+重点展示已实现的个人曲库、歌单拖动排序、歌词高亮、手动离线缓存和 M3U 导入。插件作为可选扩展，说明功能依赖具体插件，且不存在隔离沙箱。
 
-## 配图情况
+## 当前入口与边界
 
-已交付一张宣传封面。当前仓库素材中没有可直接使用的应用截图，ADB 没有连接设备，因此未拍摄真实界面，也没有把设计稿或生成界面当成产品实测图。
+- 已核对公开仓库：[colinli007/easy-music](https://github.com/colinli007/easy-music)。
+- 当日 [Releases](https://github.com/colinli007/easy-music/releases) 显示尚无发布版本。正文引导查看源码和自行编译，没有声称已有 APK。未来发布版本后应核对真实资产再更新获取段。
+- 项目说明不走应用商店分发；iOS 自行编译需要 Mac 与 Xcode。
+- 项目仍列明锁屏没有上一首／下一首按钮，以及 iOS 音频被抢占后状态可能显示不准确。三篇正文均保留了此信息，没有使用“完整锁屏控制”或“完美双端体验”。
+- 不宣传全网曲库、投屏、算法推荐、多设备同步、均衡器、倍速或全格式兼容。
+- 普通 M3U / M3U8 导入是快照；HLS 分片清单不支持。歌词依赖实际来源，下载内容及长度依赖音源。
 
-后续最有价值的两张图是“已有曲目的曲库页”和“显示歌词的播放页”：前者帮助读者判断管理方式，后者展示播放体验。截图中的曲目、封面和账号信息应适合公开。
+## 事实依据
 
-## 内容发布与观察
+| 文案主张 | 本地核查位置 |
+| --- | --- |
+| 文件、URL、M3U 导入及限制 | `src/library/import.ts`、`src/library/m3u.ts`、`src/ui/import-sheet.tsx` |
+| 曲库分类、搜索排序 | `src/app/(tabs)/library.tsx`、`src/app/(tabs)/search.tsx`、`src/domain/repository/track-repository.ts` |
+| 歌单拖动排序与批量下载 | `src/app/playlist/[id].tsx` |
+| 模式与队列移除逻辑 | `src/playback/queue.ts`、`src/playback/player.ts` |
+| 结束后回到开头、后台与锁屏边界 | `src/playback/player.ts`、`app.json`、`README.md` |
+| 缓存有效性与优先解析 | `src/sources/resolve.ts`、`src/cache/store.ts`、`src/cache/files.ts` |
+| 歌词来源与高亮 | `src/lyrics/sources.ts`、`src/lyrics/ui/lyrics-card.tsx` |
+| 最近播放 | `src/history/repository.ts`、`src/playback/player.ts`、`src/app/(tabs)/index.tsx` |
+| 插件门面、能力与风险 | `src/plugins/index.ts`、`src/plugins/screens/discovery.tsx`、`src/plugins/ui/risk-notice.tsx`、`eslint.config.js` |
+| 许可、依赖与平台 | `package.json`、`LICENSE`、`app.json` |
 
-先用本套三个不同角度的首发稿观察读者是否理解产品、能否找到仓库，再根据真实问题写第二篇。适合延伸的题目是本地歌词使用、M3U 歌单导入，以及开发者关心的缓存解析实现。
+本轮完成源码静态核对、公开入口核对与配图视觉检查；未重新做双端真机验收。检查时没有 ADB 已连接设备，也没有已启动的 iOS 模拟器，因此未新增真实 App 截图。README 的既有验收声明没有当成本轮实测结果使用。
 
-每次发布记下平台、文章地址和发布时间，观察文章阅读、仓库访问及 Star 的变化。跨平台同时发布时，新增 Star 不能精确归因于单篇文章，不用时间相关性冒充转化证明。这里没有承诺平台推荐、阅读量或涨 Star 数量，也没有将任何外链位置或标签数量称为平台规则。
-
-## 核查依据
-
-- 作者本次说明：功能已完善，主打免费、开源、无广告。
-- `README.md`、`LICENSE`、`package.json`：定位、开源声明、技术栈与平台边界。
-- `src/library/import.ts`、`src/library/m3u.ts`：本地文件、远程 URL 与 M3U 导入。
-- `src/playback/player.ts`、`src/playback/queue.ts`：后台播放、媒体控制及队列。
-- `src/cache/download.ts`、`src/cache/queue.ts`、`src/sources/resolve.ts`：手动下载与缓存优先解析。
-- `src/lyrics/sources.ts`、`src/history/repository.ts`：歌词来源与最近播放。
-- `src/plugins/index.ts`：插件门面，两端共用。
-
-本轮进行了资料与源码静态核查，没有重新执行 App 真机验收。当前代码与依赖未发现广告或支付 SDK，但这不代表对外部插件作过审计。稿件不使用虚构用户评价、开发耗时、性能测试、下载量或实测经历。
+本次仅修改推广目录，没有改业务代码，不为文案变更重复执行应用测试。发布前若代码、安装包或已知问题发生变化，应更新对应段落。

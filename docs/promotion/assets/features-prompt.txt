@@ -1,0 +1,14 @@
+生成方式：内置 image_gen；全新生成；2026-10-18。
+
+Use case: ads-marketing
+Create a polished Chinese feature poster for 轻松音乐 EasyMusic, portrait 2:3. Premium editorial info-poster with black #0A0A0C background, charcoal panels #17171C, vivid lime #C8FF4D accents, off-white #F6F6F8 type. Clear simplified Chinese, bold spacious typography, four vertically stacked succinct feature blocks with small tactile sculptural music objects/icons (music file, stacked discs, lyric paper, download arrow); decorative conceptual illustrations only, not fake software UI. Balanced airy hierarchy, no clutter. EXACT TEXT:
+top brand "轻松音乐 EasyMusic"
+large headline "把喜欢的歌" newline "放进自己的曲库"
+block 01 title "导入自己的音乐" description "本地文件 · 远程音频地址 · M3U 歌单"
+block 02 title "按你的习惯整理" description "歌单 · 专辑 · 艺人 · 最近播放"
+block 03 title "听歌，也看歌词" description "支持本地 LRC 与内嵌歌词"
+block 04 title "提前下载，离线听" description "可下载曲目手动缓存后，无网可听"
+footer small note "歌词需有对应来源 · 下载取决于音源可用性"
+footer address "GitHub  colinli007/easy-music"
+tiny caption "功能示意 · 非应用截图"
+No other text. No phones, no imitation app screenshots, no fake songs, no app store badges.
