@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -81,10 +81,8 @@ function notFoundHint(track: Track, unreadableFile: string | null, hasDirectory:
     ? `把「${track.title}.lrc」放进歌词目录即可显示。`
     : `在「我的」页指定歌词目录，放入「${track.title}.lrc」即可显示。`;
 
-  // 插件歌词只在具备插件能力的平台上提；iOS 上这句话指向一个不存在的入口。
   // 装了歌词类插件却没搜到时，说「按标题没有搜到」而不是「安装后会自动查找」——
   // 后者会让用户去装一个已经装了的东西。
-  if (!Plugins.supported) return fileHint;
   return Plugins.hasLyricPlugins()
     ? `已安装的歌词插件按这个标题没有搜到。${fileHint}`
     : `${fileHint}安装歌词类插件后，也会按标题自动查找。`;

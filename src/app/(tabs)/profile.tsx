@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
@@ -26,7 +26,6 @@ import { describeDirectory } from '@/lyrics/directory';
 import { chooseLyricsDirectory, clearLyricsDirectory, useLyricsDirectory } from '@/lyrics/store';
 import { setPlayMode } from '@/playback/player';
 import { usePlayback } from '@/playback/use-playback';
-import { Plugins } from '@/plugins';
 import { formatBytes } from '@/ui/format';
 import { ImportSheet } from '@/ui/import-sheet';
 import { Screen } from '@/ui/screen';
@@ -132,14 +131,7 @@ export default function ProfileScreen() {
             value={lyricsDirectory ? describeDirectory(lyricsDirectory) : '未指定'}
             onPress={() => setEditingLyricsDirectory(true)}
           />
-          {/*
-            插件入口只在具备插件能力的平台上存在。iOS 侧 `supported` 恒为 false，
-            这一行整个不渲染——plugin-source spec 要求 iOS 上不存在任何插件相关入口，
-            而不是渲染一个「不可用」的入口。
-          */}
-          {Plugins.supported ? (
-            <Row Icon={Puzzle} label="插件音源" onPress={() => router.push('/plugins')} />
-          ) : null}
+          <Row Icon={Puzzle} label="插件音源" onPress={() => router.push('/plugins')} />
         </View>
 
         <View style={{ backgroundColor: Colors.surface, borderRadius: 18, padding: 18, gap: 10 }}>

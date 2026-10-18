@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 /**
  * 按文件头的魔数判断音频容器格式，返回不带点的扩展名。

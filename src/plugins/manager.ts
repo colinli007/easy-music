@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import { File } from 'expo-file-system';
 
@@ -24,7 +24,7 @@ import { registerSource, unregisterSource } from '@/sources/registry';
  * 插件的生命周期：安装、更新、卸载、启动时加载，以及与来源注册表的同步。
  *
  * 注册方向是**插件推向注册表**，而不是注册表来拉插件。这样 `src/sources` 不需要
- * 知道插件的存在，iOS 侧的引用链在门面处就断开了（design.md 决策 6）。
+ * 知道插件的存在，来源层与插件模块之间没有反向依赖。
  */
 
 type PluginEntry = {

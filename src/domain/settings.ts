@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import Storage from 'expo-sqlite/kv-store';
 

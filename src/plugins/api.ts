@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import type { CandidateTrack } from '@/domain/model/candidate-track';
 import type { Track } from '@/domain/model/track';
@@ -8,10 +8,8 @@ import type { ContentSearchType, PluginUserVariable } from '@/plugins/protocol';
 /**
  * 插件能力的门面契约。
  *
- * 本文件**只有类型**，不引用任何实现，因此两端都能安全依赖。`index.ts`（平台中立，
- * iOS 走这条）给出全空实现，`index.android.ts` 转发到真实实现——把契约写成一个对象
- * 类型而不是一组独立导出，是为了让两端的形状由编译器强制对齐：任何一侧多一个或少一个
- * 成员都编译不过（design.md 决策 6）。
+ * 本文件**只有类型**，不引用任何实现，核心代码与界面可以安全依赖。`index.ts` 按这份
+ * 契约转发到真实实现，核心代码看到的插件能力就只有这里列出的成员。
  */
 
 /** 插件声明的宿主版本范围与当前宿主的关系。结论只用于提示，不拦截安装。 */
@@ -62,8 +60,6 @@ export type PluginSearchOutcome = {
 };
 
 export type PluginsFacade = {
-  /** 当前平台是否具备插件能力。iOS 恒为 false。 */
-  readonly supported: boolean;
   /** 注入给插件的依赖名列表。对插件作者是兼容性契约，需要向用户与文档明示。 */
   readonly injectedModules: readonly string[];
 

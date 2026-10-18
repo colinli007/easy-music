@@ -18,7 +18,7 @@ UI 层        src/ui, src/app
              src/history（播放历史：记录与广播）
 ```
 
-`src/plugins`（仅 Android）不属于这四层，它是跨层的独立模块，见文末。
+`src/plugins` 不属于这四层，它是跨层的独立模块，见文末。
 
 上层可以依赖下层，**下层不得依赖上层**。同层之间的横向依赖需要有明确理由。
 
@@ -107,7 +107,7 @@ UI 层        src/ui, src/app
 
 **播放层不参与**。歌词组件自己订阅 `usePlayback()` 拿当前位置、自己算当前行；播放层没有任何理由知道歌词的存在，反向依赖只会让所有播放状态的订阅者为一个界面细节付出重渲染。
 
-**与插件的边界**：歌词模块只经 `@/plugins` 门面调用插件（`lyricForTrack` 与 `searchLyric` 两个方法），不引用任何插件实现模块——iOS 上门面为空实现，插件那两路自然为空，不需要平台分支。歌词类插件的筛选在门面之内（`supportedSearchType` 显式含 `lyric`），歌词模块不知道插件长什么样。
+**与插件的边界**：歌词模块只经 `@/plugins` 门面调用插件（`lyricForTrack` 与 `searchLyric` 两个方法），不引用任何插件实现模块——未安装插件时那两路自然为空，不需要特判。歌词类插件的筛选在门面之内（`supportedSearchType` 显式含 `lyric`），歌词模块不知道插件长什么样。
 
 ### UI 层 `src/ui` / `src/app`
 
@@ -117,9 +117,9 @@ UI 层        src/ui, src/app
 
 - **来源可扩展**：新增内置来源时，只在 `src/sources` 下加一个目录并注册，其余各层不动。
 - **缓存可插入**：离线缓存（C2）在 `src/sources/resolve.ts` 这个唯一入口处拦截，播放层与各来源实现一行未改。
-- **插件可裁剪**：见下。
+- **插件可隔离**：核心只经门面调用插件，不装任何插件也是完整的播放器，见下。
 
-## 插件模块 `src/plugins`（仅 Android）
+## 插件模块 `src/plugins`
 
 插件不在上面四层里，它是**跨层的独立模块**：自带宿主运行时、自己的持久化、自己的界面，并把自己注册进来源层。
 
@@ -128,21 +128,18 @@ UI 层        src/ui, src/app
 与其余代码之间只有一条通路：
 
 ```
-其余各层  ──►  src/plugins/index.ts        （门面，全空实现）
-              src/plugins/screens/*.tsx    （屏幕，全空实现）
-                        ▲
-                        │ 同名 .android 文件在 Android 上顶替
-                        │
-              src/plugins/index.android.ts ──► host / manager / source / ui …
+其余各层  ──►  src/plugins/index.ts        （门面）  ──► host / manager / source / ui …
+              src/plugins/screens/*.tsx    （屏幕，路由文件转发到这里）
 ```
 
-这条分界线就是 iOS 裁剪的全部机制：打包器按静态 `import` 关系收集模块，与代码是否可达无关，所以只有让 iOS 侧**根本不存在**那条 import，插件宿主与 `cheerio` 等专属依赖才不会进入产物；运行时判断 `Platform.OS` 做不到这一点。
+门面是插件模块唯一的对外出口：核心代码看到的插件能力只有 `PluginsFacade` 列出的成员，插件内部可以自由重构而不波及核心。插件在 Android 与 iOS 上走同一套代码，没有平台分支。
 
-三道守卫，缺一不可：
+两道守卫：
 
-1. ESLint 禁止 `src/plugins` 之外的代码引用插件实现模块与插件专属依赖
+1. ESLint 禁止 `src/plugins` 之外的代码引用插件实现模块
 2. `pnpm check:constraints` 在引用层面复查核心路径
-3. `pnpm check:ios-strip` 导出真实 iOS 产物，断言模块清单里确实没有它们——**前两条都只看源码，只有这一条能证明裁剪真的生效**
+
+> **作废**：此前插件只在 Android 上存在，靠「平台中立的空实现门面 + `.android` 同名文件顶替」在 iOS 构建中整体裁掉，并由 `pnpm check:ios-strip` 检查 iOS 产物。这套机制只为 App Store 上架服务，不上架后已删除（`drop-store-distribution`）。
 
 ### 候选曲目的来路：搜索、发现与链接导入
 
@@ -155,6 +152,6 @@ UI 层        src/ui, src/app
 | 发现（榜单 · 推荐歌单 · 专辑 · 艺人） | `src/plugins/discovery.ts` | `getTopLists` · `getTopListDetail` · `getRecommendSheetTags` · `getRecommendSheetsByTag` · `getMusicSheetInfo` · `getAlbumInfo` · `getArtistWorks` | 曲目在 `musicList`（艺人作品在 `data`）；列表面向单个插件，没有跨插件游标。榜单项、歌单项、专辑项、艺人项、标签是插件的凭据，校验后连同原始条目一起随路由参数传递，下一步调用原样交回插件 |
 | 链接导入（外部歌单 · 单曲）           | `src/plugins/discovery.ts` | `importMusicSheet` · `importMusicItem`                                                                                                             | 用户先选插件再粘贴链接，不跨插件猜测归属。返回曲目数组 / 单个条目；对不属于自己的输入返回假值，这是协议的合法回答（「不识别」），与畸形数据分开归因                                       |
 
-四条来路都经 `host/invoke.ts` 的统一调用通道（未实现 / 抛错 / 超时 / 畸形四类故障的归因）、同一个 `toCandidateTrack`（主键拼接与畸形条目丢弃）、同一个 `CandidateRow`（`src/plugins/ui/candidate-row.tsx`），也都在同一条裁剪线之内：发现层的入口在插件管理页头部，整棵子树只被 Android 侧引用，平台中立门面没有为它增加任何成员。发现能力（`canBrowseTopLists` / `canBrowseSheets` / `canImportSheet` / `canImportItem`）与搜索能力一样在加载期按方法是否存在判定，未实现的能力在界面上不出现、不报错。
+四条来路都经 `host/invoke.ts` 的统一调用通道（未实现 / 抛错 / 超时 / 畸形四类故障的归因）、同一个 `toCandidateTrack`（主键拼接与畸形条目丢弃）、同一个 `CandidateRow`（`src/plugins/ui/candidate-row.tsx`），也都在同一道门面之后：发现层的入口在插件管理页头部，整棵子树只被插件屏幕模块引用，门面没有为它增加任何成员。发现能力（`canBrowseTopLists` / `canBrowseSheets` / `canImportSheet` / `canImportItem`）与搜索能力一样在加载期按方法是否存在判定，未实现的能力在界面上不出现、不报错。
 
 **整个列表批量入库**是候选曲目的第二条入库路径：`collectTracks`（`src/plugins/discovery.ts`，逐页取到 `isEnd`，任一页失败即中止不入库）取完整个列表后交给 `importCandidates`（`src/library/import.ts`）——一次事务内批量去重入库（`addTracks`），再新建或追加到既有歌单。后两者在核心层，不引用插件模块。**导入是快照**：产物是普通本地歌单，不记录来源、不跟随外部更新、不依赖插件存在；「更新」就是再导一次——曲库去重加歌单关联的 `INSERT OR IGNORE`，零新增状态就得到手动同步。订阅型歌单被明确排除，理由见 `changes/archive/*-add-plugin-discovery-import/design.md` 决策 1。

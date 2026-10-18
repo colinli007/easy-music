@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
@@ -32,15 +32,9 @@ module.exports = defineConfig([
     },
   },
   {
-    // add-plugin-source-system/design.md 决策 6：iOS 侧根本不存在通向插件实现的 import，
-    // 插件宿主与 `cheerio` 等专属依赖才不会进入 iOS 产物。打包器按静态 import 关系收集
-    // 模块，与代码是否可达无关——因此这条约束只能靠「不许写这一行 import」来守。
-    //
-    // 允许的只有两个平台分界点：`@/plugins` 门面与 `@/plugins/screens/*` 屏幕模块，
-    // 两者都有 `.android` 对应文件，iOS 解析到的是空实现。
-    //
-    // 这是引用层面的静态约束；产物层面的真实验证是 `pnpm check:ios-strip`，两者都要有——
-    // 规则挡住日常的手滑，产物检查才能证明裁剪真的生效。
+    // 插件模块对外只有两个出口：`@/plugins` 门面与 `@/plugins/screens/*` 屏幕模块
+    // （drop-store-distribution/design.md 决策 3）。核心代码只经由门面调用插件，插件内部
+    // 才能自由重构而不波及核心；未安装任何插件时核心能力完整，也靠这条边界保证。
     files: ['src/**/*.{ts,tsx}'],
     ignores: ['src/plugins/**'],
     rules: {
@@ -65,20 +59,6 @@ module.exports = defineConfig([
               ],
               message:
                 '插件实现只能被 src/plugins 内部引用。外部只能用 @/plugins 门面与 @/plugins/screens/* 屏幕模块。',
-            },
-            {
-              group: [
-                'axios',
-                'cheerio',
-                'cheerio/*',
-                'crypto-js',
-                'dayjs',
-                'big-integer',
-                'qs',
-                'he',
-              ],
-              message:
-                '这些依赖只为插件服务，必须随插件模块一并从 iOS 产物中裁剪，不得被平台中立代码引用。',
             },
           ],
         },

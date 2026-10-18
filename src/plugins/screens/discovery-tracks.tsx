@@ -1,9 +1,144 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
-import { Redirect } from 'expo-router';
+import { FlashList } from '@shopify/flash-list';
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
-/** 平台中立的插件候选曲目分页页——**空实现**，裁剪机制的说明见 `manage.tsx`。 */
+import { candidateKey } from '@/domain/model/candidate-track';
+import {
+  collectTracks,
+  fetchTrackPage,
+  type DiscoveryArtist,
+  type DiscoveryItem,
+  type TrackListKind,
+} from '@/plugins/discovery';
+import type { LoadedPlugin } from '@/plugins/host/loader';
+import { getLoadedPlugin } from '@/plugins/manager';
+import { CandidateRow } from '@/ui/candidate-row';
+import { ImportToPlaylistSheet, type CandidateLoader } from '@/ui/import-to-playlist-sheet';
+import { ScreenHeader } from '@/plugins/ui/screen-header';
+import { useCandidateAdd } from '@/plugins/ui/use-candidate-add';
+import { usePagedList } from '@/plugins/ui/use-paged-list';
+import { Screen } from '@/ui/screen';
+import { SheetAction } from '@/ui/sheet';
+import { AppText } from '@/ui/text';
+import { Colors } from '@/ui/theme';
+import { useMiniDockInset } from '@/ui/mini-player';
+
+/**
+ * 榜单、歌单、专辑、艺人单曲共用的候选曲目分页页（add-plugin-discovery-charts/design.md 决策 3）。
+ * 参数：`platform`、`kind`（决定调用哪个协议方法）、JSON 序列化的条目或艺人项（决策 4）。
+ *
+ * 曲目是**尚未加入曲库的候选曲目**：不加入就不会碰曲库；加入后与本地文件曲目同权，
+ * 逐首加入的做法与插件搜索页相同。整个列表加入歌单时先取完全部页再入库
+ * （add-plugin-discovery-import/design.md 决策 2）。
+ */
 export default function PluginDiscoveryTracksScreen() {
-  return <Redirect href="/" />;
+  const {
+    platform,
+    kind,
+    item: itemParam,
+  } = useLocalSearchParams<{ platform: string; kind: TrackListKind; item: string }>();
+
+  const plugin = getLoadedPlugin(platform);
+  // 艺人单曲页的条目是艺人项（`name`），其余三种是条目（`title`）
+  const item = useMemo(() => JSON.parse(itemParam) as DiscoveryItem | DiscoveryArtist, [itemParam]);
+  const title = 'name' in item ? item.name : item.title;
+
+  return (
+    <Screen>
+      <ScreenHeader title={title} subtitle={platform} />
+      {plugin ? (
+        <TrackList plugin={plugin} kind={kind} item={item} title={title} />
+      ) : (
+        <AppText size={12} color={Colors.textMuted} lineHeight={19}>
+          插件「{platform}」当前不可用。
+        </AppText>
+      )}
+    </Screen>
+  );
+}
+
+function TrackList({
+  plugin,
+  kind,
+  item,
+  title,
+}: {
+  plugin: LoadedPlugin;
+  kind: TrackListKind;
+  item: DiscoveryItem | DiscoveryArtist;
+  /** 新建歌单的默认名 */
+  title: string;
+}) {
+  const dockInset = useMiniDockInset();
+  const load = useCallback(
+    (page: number) => fetchTrackPage(plugin, kind, item, page),
+    [plugin, kind, item],
+  );
+  const { items, busy, failure, loadMore } = usePagedList(load);
+  const collect = useCallback<CandidateLoader>(
+    (onProgress) => collectTracks(plugin, kind, item, onProgress),
+    [plugin, kind, item],
+  );
+
+  const { added, notice, add } = useCandidateAdd();
+  const [importing, setImporting] = useState(false);
+
+  return (
+    <>
+      <SheetAction
+        label="全部加入歌单"
+        hint="先取完整个列表，再一并入库并放进歌单"
+        onPress={() => setImporting(true)}
+      />
+      <ImportToPlaylistSheet
+        visible={importing}
+        load={collect}
+        defaultName={title}
+        onClose={() => setImporting(false)}
+      />
+      {/* 提示放在列表上方而不是尾部：长列表的尾部在屏幕之外，放那里等于没提示 */}
+      {notice ? (
+        <AppText size={12} color={Colors.textMuted} lineHeight={19}>
+          {notice}
+        </AppText>
+      ) : null}
+      <FlashList
+        data={items}
+        keyExtractor={candidateKey}
+        contentContainerStyle={{ paddingBottom: dockInset }}
+        ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+        showsVerticalScrollIndicator={false}
+        onEndReachedThreshold={0.5}
+        onEndReached={loadMore}
+        ListEmptyComponent={
+          busy || failure ? null : (
+            <AppText size={12} color={Colors.textMuted}>
+              这里没有可用的曲目。
+            </AppText>
+          )
+        }
+        ListFooterComponent={
+          <View style={{ gap: 8, paddingTop: 14 }}>
+            {busy ? <ActivityIndicator color={Colors.accent} /> : null}
+            {failure ? (
+              <AppText size={11} color={Colors.danger} lineHeight={17}>
+                {failure}
+              </AppText>
+            ) : null}
+          </View>
+        }
+        renderItem={({ item: candidate }) => (
+          <CandidateRow
+            candidate={candidate}
+            added={added.has(candidateKey(candidate))}
+            onAdd={() => void add(candidate)}
+          />
+        )}
+      />
+    </>
+  );
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import type { SourceId } from '@/domain/model/track';
 import type { MediaSource } from '@/sources/contract';
@@ -17,7 +17,7 @@ import { remoteUrlSource } from '@/sources/remote-url';
  * 误判为同一首，卸载单个插件时也无法定位其存量曲目。
  *
  * 本文件不认识插件——注册是反向的，由插件模块在安装/卸载时调用下面两个函数。这样
- * `src/sources` 不引用 `src/plugins`，iOS 侧的引用链自然断开（决策 6）。
+ * `src/sources` 不引用 `src/plugins`，来源层不依赖插件模块。
  */
 const BUILT_IN: readonly MediaSource[] = [localFileSource, remoteUrlSource];
 

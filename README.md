@@ -9,7 +9,9 @@ Free & open-source local music player for Android and iOS.
 
 </div>
 
-> ⚠️ **项目状态：开发中，尚无可用版本。** C1（工程基座与核心播放能力）、C2（离线缓存）、C3（播放历史）、C6（插件音源，含榜单、推荐歌单、专辑与艺人浏览、外部歌单导入）已实现完毕，正在真机验证阶段。当前阶段只在 Android 上开发与验收，iOS 侧留待 Android 功能全部完成后集中验收一次。下方标注为「待启动」的能力尚未实现。
+> **项目状态：功能已全部完成，Android 与 iOS 均已验收。** 本项目只以开源形式分发，**不上架任何应用商店**，获取方式见下方「获取」。
+>
+> 已知问题：锁屏与控制中心没有「上一首 / 下一首」按钮；iOS 上其他应用抢占音频后，回到应用时播放按钮仍显示为播放中。
 
 ## 这是什么
 
@@ -26,23 +28,33 @@ Free & open-source local music player for Android and iOS.
 
 应用仅播放用户自行提供或自行指定的资源——你设备上的本地文件、你自己可访问的远程地址。用户需自行确保其所播放内容的合法性，并自行承担相应责任。项目维护者不对用户获取、存储或播放的任何内容负责。
 
-## 规划中的能力
+## 功能
 
-|         | 能力                                                                                          | 状态                           |
-| ------- | --------------------------------------------------------------------------------------------- | ------------------------------ |
-| **C1**  | 本地文件与远程 URL 播放 · 曲库与元数据 · 歌单 · 后台播放与锁屏控制                            | 已实现，待真机验证             |
-| **C2**  | 离线缓存（手动下载曲目到本地，无网可听）                                                      | 已实现，待真机验证             |
-| **C3**  | 播放历史（最近播放）                                                                          | 已实现，待真机验证             |
-| **C3b** | 歌词显示（歌词目录 `.lrc` · 内嵌歌词 · 插件歌词）                                             | 已归档，Android 已验；iOS 待验 |
-| **C6**  | 插件音源系统（**仅 Android**，见下）· 榜单、推荐歌单、专辑与艺人浏览 · 外部歌单导入与整单入库 | 已实现，iOS 侧待验证           |
+|         | 能力                                                                   |
+| ------- | ---------------------------------------------------------------------- |
+| **C1**  | 本地文件与远程 URL 播放 · 曲库与元数据 · 歌单 · 后台播放与锁屏控制     |
+| **C2**  | 离线缓存（手动下载曲目到本地，无网可听）                               |
+| **C3**  | 播放历史（最近播放）                                                   |
+| **C3b** | 歌词显示（歌词目录 `.lrc` · 内嵌歌词 · 插件歌词）                      |
+| **C6**  | 插件音源系统 · 榜单、推荐歌单、专辑与艺人浏览 · 外部歌单导入与整单入库 |
+| **C7**  | 播放列表文件（`.m3u` / `.m3u8`）批量导入                               |
+
+以上能力在 Android 与 iOS 上一致可用。
 
 完整功能地图与路线图见 [`openspec/PRODUCT.md`](openspec/PRODUCT.md)。
 
-**明确不做**：多设备同步、曲库备份、均衡器/音效、倍速播放、鸿蒙支持、网盘接入，以及——**内置任何音源**。理由见 PRODUCT.md。
+**明确不做**：应用商店上架、多设备同步、曲库备份、均衡器/音效、倍速播放、鸿蒙支持、网盘接入，以及——**内置任何音源**。理由见 PRODUCT.md。
+
+## 获取
+
+本项目不上架任何应用商店。
+
+- **Android**：安装包在 [GitHub Releases](https://github.com/colinli007/easy-music/releases) 提供，下载 APK 后直接安装（需在系统设置中允许安装未知来源应用）。首个版本发布前，可按下方「开发」一节自行编译。
+- **iOS**：不提供安装包，需用 Mac 与 Xcode 自行编译安装到自己的设备，步骤见下方「开发」。使用免费 Apple ID 签名时，应用 7 天后需重新编译安装一次；付费开发者账号签名为一年。
 
 ### 关于插件音源（C6）
 
-插件系统是 **Android 独占**能力。App Store 审核指南 2.5.2 与 2.3.1 使其无法在 iOS 上合规上架，因此它被设计为**编译期可裁剪模块**，iOS 构建中不包含相关代码。核心播放能力不依赖该模块——裁剪后的 iOS 版本仍是功能完整的播放器。
+插件系统在 Android 与 iOS 上都可用。核心播放能力不依赖它——不安装任何插件，应用仍是功能完整的播放器。
 
 插件完全由用户自行获取和安装，本项目**不内置、不默认指向任何插件源**，也不提供任何插件市场、插件列表或推荐入口。从哪里获取插件、是否信任它，完全由使用者自行判断与承担。
 
@@ -81,7 +93,7 @@ Free & open-source local music player for Android and iOS.
 
 包管理器为 **pnpm**（`.npmrc` 设置了 `node-linker=hoisted`，RN 的原生模块自动链接依赖扁平的 `node_modules` 布局）。
 
-选型的完整决策记录（含备选方案与未采纳理由）见 [`design.md`](openspec/changes/bootstrap-music-player/design.md)。其中值得单独提一句的是播放引擎：本项目原定使用 `react-native-track-player`，但它在 v5 转为商业授权、开源的 v4 线随即冻结，与 GPL-3.0 分发冲突，因此在实施阶段改用 `expo-audio`。
+选型的完整决策记录（含备选方案与未采纳理由）见 [`design.md`](openspec/changes/archive/2026-08-11-bootstrap-music-player/design.md)。其中值得单独提一句的是播放引擎：本项目原定使用 `react-native-track-player`，但它在 v5 转为商业授权、开源的 v4 线随即冻结，与 GPL-3.0 分发冲突，因此在实施阶段改用 `expo-audio`。
 
 ## 开发
 
@@ -98,6 +110,17 @@ pnpm android
 pnpm start
 ```
 
+自行编译安装（不需要 Metro）：
+
+```bash
+# iOS：装到连接着的 iPhone。首次需在 Xcode 打开 ios/app.xcworkspace，
+# 为 app target 的 Signing & Capabilities 选择自己的 Team
+pnpm ios --device --configuration Release
+
+# Android：生成 APK，产物在 android/app/build/outputs/apk/release/
+cd android && ./gradlew assembleRelease
+```
+
 云端构建（无需本地 Xcode 与 Android SDK）：
 
 ```bash
@@ -112,14 +135,12 @@ pnpm typecheck           # tsc --noEmit
 pnpm lint                # eslint（含 GPL 头部与分层约束规则）
 pnpm format              # prettier --write
 pnpm check:constraints   # 依赖许可证 + 核心能力不依赖插件实现
-pnpm check:ios-strip     # 导出 iOS 产物，断言其中不含插件实现与插件专属依赖
-pnpm test:cla            # CLA 工作流的桩测试
+pnpm test:queue          # 播放队列与播放模式的纯逻辑测试
+pnpm test:m3u            # m3u 解析测试
 pnpm doctor              # expo-doctor
 ```
 
-`pnpm check:constraints` 检查的是两条**长期**约束：依赖不得引入 GPL/LGPL/AGPL 或专有授权的库；核心能力不得依赖插件实现模块（否则 iOS 裁剪后无法交付完整功能）。破坏其中任何一条都会让 iOS 失去合规上架的前提，因此它是每次改依赖后都应该跑的检查，而不是一次性的。
-
-`pnpm check:ios-strip` 是前一条在**产物层面**的验证：它真的导出一份 iOS 产物，读 source map 里的模块清单，断言插件宿主与 `cheerio` 等插件专属依赖确实不在其中。裁剪失效在运行时看不出任何差别——功能照常、界面照常，只有包体默默变大，而「iOS 包中不含可下载执行的代码」这一审核陈述不再成立。因此它必须靠检查产物来发现。耗时约一两分钟，改动插件模块或其引用关系后跑一次。
+`pnpm check:constraints` 检查的是两条**长期**约束：依赖的许可证必须能与 GPL-3.0-or-later 一起分发（拦下仅限 GPL-2.0、专有授权与未声明许可证的库）；核心能力只能经由 `@/plugins` 门面调用插件，不得引用插件实现模块。每次改依赖后都应该跑一次，而不是一次性的检查。
 
 ### 代码结构
 
@@ -131,24 +152,20 @@ src/library    曲库能力：元数据解析、封面提取与缓存、导入�
 src/cache      离线缓存：下载队列、缓存记录与文件、解析入口处的缓存命中
 src/history    播放历史：一次播放的记录、最近播放的查询与广播
 src/lyrics     歌词：四处来源的查找与优先级、.lrc 解析、歌词缓存、播放页歌词区
-src/plugins    插件音源（仅 Android）：宿主、协议适配、生命周期、界面
+src/plugins    插件音源：宿主、协议适配、生命周期、界面
 src/ui         界面组件与设计令牌
 src/app        expo-router 路由（保持极薄）
 ```
 
-`src/plugins` 与其余部分之间只有一条通路：`src/plugins/index.ts` 门面（以及 `screens/` 下的屏幕模块）。两者都有 `.android` 对应文件，iOS 解析到的是空实现——插件实现与其依赖因此根本不出现在 iOS 的模块图里。ESLint 禁止其余代码直接引用插件实现模块。
+`src/plugins` 与其余部分之间只有一条通路：`src/plugins/index.ts` 门面（以及 `screens/` 下的屏幕模块）。ESLint 禁止其余代码直接引用插件实现模块，插件内部可以自由重构而不波及核心。
 
 分层约定与依赖方向见 [`docs/architecture.md`](docs/architecture.md)。**上层可以依赖下层，下层不得依赖上层**；播放层不得感知具体来源，这条由 ESLint 强制执行。
 
 ## 贡献
 
-欢迎提 Issue 和 PR。**提交 PR 前需先签署 [CLA](CLA.md)**（约 30 秒，只需一次）。
+欢迎提 Issue 和 PR，**不需要签署任何贡献者协议**。你的贡献以 GPL-3.0-or-later 授权并入本项目，著作权归你本人。
 
-需要 CLA 的原因很具体：本项目以 GPL-3.0 开源，同时要上架 App Store，而 GPL-3.0 与 App Store 的分发条款存在冲突。维护者作为版权持有人可以为自己的代码做出额外授权，但无权替你的代码这么做——没有 CLA，任何一个外部贡献都会导致 iOS 版本无法合规上架。CLA 不索取你的版权，你完整保留自己贡献的著作权。
-
-另有一条硬约束请注意：**不要引入 GPL / LGPL / AGPL 或专有授权的第三方库**，同样会阻断上架。新增依赖后请跑 `pnpm check:constraints`。
-
-`main` 已开启分支保护，`CLA` 是必需状态检查——未签署的 PR 无法合并。
+请注意一条约束：**新增的第三方库必须能与 GPL-3.0-or-later 一起分发**——专有授权（含「个人免费、商用付费」）与仅限 GPL-2.0 的库不能引入。新增依赖后请跑 `pnpm check:constraints`。
 
 详细的贡献流程（含源文件 GPL 头部要求）见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -158,6 +175,6 @@ src/app        expo-router 路由（保持极薄）
 
 这意味着你可以自由地使用、修改和分发本项目，但**基于本项目的衍生作品必须同样以 GPL-3.0 开源**。
 
-版权由 `li1164267803` 独家持有（外部贡献通过 [CLA](CLA.md) 授权）。维护者据此为应用商店发行版本做出必要的额外授权——这是 GPL 项目能够合规上架 iOS 的前提，也是 VLC 当年在 App Store 遇到问题的症结所在。
+版权归 `colinli007` 与各位贡献者所有，各自对自己贡献的部分享有著作权。
 
 本项目参考了 [MusicFree](https://github.com/maotoumao/MusicFree)（AGPL-3.0）的**插件协议规范与设计思路**，但**未复制其任何源代码**。接口定义本身不受版权保护。

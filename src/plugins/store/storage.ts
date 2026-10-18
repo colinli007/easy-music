@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import { randomUUID } from 'expo-crypto';
 import { Directory, File, Paths } from 'expo-file-system';
@@ -8,10 +8,9 @@ import Storage from 'expo-sqlite/kv-store';
 /**
  * 插件自身的持久化：插件代码文件、已安装清单、用户变量。
  *
- * **刻意不进曲库的 SQLite 迁移。** 迁移文件在 `src/domain` 下，是平台中立的核心代码；
- * 往那里加一张插件表，等于让 iOS 产物里带上一张永远为空的表和一段与插件有关的 DDL，
- * 与决策 6「iOS 上插件相关的一切都不存在」相抵触。插件数据量极小（一份清单 + 几 KB
- * 变量），键值存储足够，且完全收敛在 `src/plugins/` 内。
+ * **刻意不进曲库的 SQLite 迁移。** 迁移文件在 `src/domain` 下，是核心代码；往那里加一张
+ * 插件表，等于让核心层知道插件的数据形状。插件数据量极小（一份清单 + 几 KB 变量），
+ * 键值存储足够，且完全收敛在 `src/plugins/` 内。
  */
 
 const PLUGIN_DIR = 'plugins';

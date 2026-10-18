@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2026 li1164267803 · 轻松音乐 EasyMusic
+// Copyright (C) 2026 colinli007 and contributors · 轻松音乐 EasyMusic
 
 import {
   Inter_400Regular,
@@ -39,7 +39,6 @@ export default function RootLayout() {
   useEffect(() => {
     // 已安装的插件在启动时统一加载并注册为来源，否则用户点开一首插件曲目时，
     // 它归属的来源还不在注册表里，会被当成「来源不可用」。
-    // iOS 上这是一个空实现，不引入任何插件代码（design.md 决策 6）。
     void Plugins.init();
   }, []);
 
