@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "articles": [
+    {
+      "platform": "xiaohongshu",
+      "file": "xiaohongshu.md",
+      "images": ["assets/cover.png", "assets/features.png"],
+      "tags": ["开源项目", "音乐播放器", "本地音乐", "独立开发"],
+      "aiAssisted": true
+    },
+    {
+      "platform": "juejin",
+      "file": "juejin.md",
+      "category": "前端",
+      "tags": ["React Native", "开源"],
+      "summary": "轻松音乐 EasyMusic 的实现拆解：缓存优先的来源解析、播放队列语义与插件门面，及其在个人曲库中的使用边界。",
+      "cover": "assets/cover.png",
+      "aiAssisted": true
+    },
+    {
+      "platform": "csdn",
+      "file": "csdn.md",
+      "tags": ["开源", "音乐", "react native"],
+      "summary": "介绍免费开源的个人音乐播放器轻松音乐：本地文件、音频地址与 M3U 导入，曲库整理、歌词和离线缓存，以及当前获取方式与限制。",
+      "cover": "assets/cover.png",
+      "aiAssisted": true
+    }
+  ]
+}

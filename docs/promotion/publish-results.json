@@ -1,0 +1,27 @@
+{
+  "articles": [
+    {
+      "platform": "xiaohongshu",
+      "title": "你的歌，你说了算｜轻松音乐",
+      "status": "pending_review",
+      "managerUrl": "https://creator.xiaohongshu.com/new/note-manager",
+      "evidence": "原编辑页原生点击后显示发布成功；管理页新增同标题笔记，显示审核中，创建时间 2026-10-18 19:06（平台时间）。"
+    },
+    {
+      "platform": "csdn",
+      "title": "轻松音乐 EasyMusic：用免费开源播放器管理自己的曲库",
+      "status": "pending_review",
+      "articleId": "168343451",
+      "canonicalUrl": "https://blog.csdn.net/weixin_44309374/article/details/168343451?sharetype=blogdetail&sharerId=168343451&sharerefer=PC&sharesource=weixin_44309374",
+      "evidence": "发布成功页面显示：发布成功！正在审核中。"
+    },
+    {
+      "platform": "juejin",
+      "title": "React Native 音乐播放器：把音源、缓存和播放队列拆开",
+      "status": "pending_review",
+      "articleId": "7697446131198951467",
+      "canonicalUrl": "https://juejin.cn/spost/7697446131198951467",
+      "evidence": "发布成功页返回实际文章链接；打开文章后标题旁显示审核中，正文与两张配图均在成文中。"
+    }
+  ]
+}
